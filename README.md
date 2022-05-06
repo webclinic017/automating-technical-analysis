@@ -1,4 +1,4 @@
-# Simple stock trading with data analytics and technical analysis.
+# Simple stock trading with data analytics and technical analysis. (Binance only)
 
 ## Links:
 
