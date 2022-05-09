@@ -45,17 +45,27 @@ def update_market_data(data):
             df_stocks.to_csv('market_data/snp500.txt', index = False)
         except:
             pass
+        try:
+            df_indexes = pd.read_html('https://finance.yahoo.com/world-indices/')[0]
+            df_indexes = df_indexes[['Symbol', 'Name']]
+            df_indexes.columns = ['Ticker', 'Indexes']
+            df_indexes.loc[0, 'Last Update'] = dt.date.today()
+            df_indexes.to_csv('indexes.txt', index = False)
+        except:
+            pass
 
 def data_update():
     df_crypto = pd.read_csv('market_data/crypto.txt')
     df_stocks = pd.read_csv('market_data/snp500.txt')
+    df_indexes = pd.read_csv('market_data/indexes.txt')
 
     if (dt.datetime.now() - pd.to_datetime(df_crypto['Last Update'][0])).days >= 30:
         update_market_data('crypto')
         df_crypto = pd.read_csv('market_data/crypto.txt')
-    elif (dt.datetime.now() - pd.to_datetime(df_stocks['Last Update'][0])).days >= 90:
+    elif ((dt.datetime.now() - pd.to_datetime(df_stocks['Last Update'][0])).days >= 30) or ((dt.datetime.now() - pd.to_datetime(df_indexes['Last Update'][0])).days >= 30):
         update_market_data('stock')
         df_stocks = pd.read_csv('market_data/snp500.txt')
+        df_indexes = pd.read_csv('market_data/indexes.txt')
 
     gc.collect()
         
@@ -66,29 +76,30 @@ def date_utc(date_):
         
 class Data_Sourcing:
     def __init__(self):
-        #self.df_crypto = pd.read_csv('market_data/crypto.txt')
-        self.df_crypto = pd.read_csv('market_data/binance.txt')
+        self.df_crypto = pd.read_csv('market_data/crypto.txt')
         self.df_stocks = pd.read_csv('market_data/snp500.txt')
+        self.df_indexes = pd.read_csv('market_data/indexes.txt')
 
     def exchange_data(self, exchange):
         self.exchange = exchange
         if self.exchange == 'Bittrex' or self.exchange == 'Binance':
-            self.markets = np.sort(self.df_crypto['Market'].unique())
+            self.markets = np.sort(self.df_crypto['Market Name'].unique())
         else: 
             self.stocks = np.sort(self.df_stocks['Company'].unique())
+            self.indexes = np.sort(self.df_stocks['Company'].unique())
 
     def market_data(self, market):
         self.market = market
         if self.exchange != 'Yahoo! Finance':
-            self.assets = np.sort(self.df_crypto[(self.df_crypto['Market'] == self.market)]['Currency'].unique())
-            self.currency = self.market
+            self.assets = np.sort(self.df_crypto[(self.df_crypto['Market Name'] == self.market)]['Currency Name'].unique())
+            self.currency = self.df_crypto[(self.df_crypto['Market Name'] == self.market)]['Market'].values[0]
             
     def intervals(self, selected_interval):
         self.selected_interval = selected_interval
         self.period = None
         exchange_interval = {'Yahoo! Finance': {'5 Minute':'5m', '15 Minute':'15m', '30 Minute':'30m', '1 Hour':'60m', 
                                          '1 Day':'1d', '1 Week':'1wk', '1 Month':'1mo'}, 
-                     'Binance': {'1 Minute':'1m', '3 Minute':'3m', '5 Minute':'5m', '15 Minute':'15m', '30 Minute':'30m', 
+                     'Binance': {'3 Minute':'3m', '5 Minute':'5m', '15 Minute':'15m', '30 Minute':'30m', 
                                  '1 Hour':'1h', '1 Day':'1d', '1 Week':'1w', '1 Month':'1M'}, 
                      'Bittrex': {'5 Minute':'fiveMin', '30 Minute':'thirtyMin', '1 Hour':'hour', '1 Day':'day'}}
         
@@ -105,15 +116,15 @@ class Data_Sourcing:
                 self.period = 'max'
                     
     def apis(self, asset):
-        self.asset = asset.upper()
-        limit = 1000
+        self.asset = asset
         
         if self.exchange != 'Yahoo! Finance':
-            self.ticker_market = self.df_crypto[((self.df_crypto['Currency'] == self.asset) & 
-                 (self.df_crypto['Market'] == self.market))][f'{self.exchange} Pair'].values[0]
-            self.currency = self.markets
+            self.ticker_market = self.df_crypto[((self.df_crypto['Currency Name'] == self.asset) & 
+                 (self.df_crypto['Market Name'] == self.market))][f'{self.exchange} Pair'].values[0]
+            self.currency = self.df_crypto[((self.df_crypto['Currency Name'] == self.asset) & 
+                 (self.df_crypto['Market Name'] == self.market))]['Market'].values[0]
             if self.exchange == 'Binance':
-                url = f"https://api.binance.com/api/v1/klines?symbol={self.ticker_market}&interval={self.exchange_interval}&limit={limit}"
+                url = f"https://api.binance.com/api/v1/klines?symbol={self.ticker_market}&interval={self.exchange_interval}"
                 self.df = pd.DataFrame(json.loads(requests.get(url).text))
                 self.df.columns = ['open_time', 'Open', 'High', 'Low', 'Adj Close', 'Volume', 'close_time', 
                                 'quoted average volume', 'num_trades', 'taker_base_vol', 'taker_quote_vol', 'ignore']
@@ -136,3 +147,4 @@ class Data_Sourcing:
         self.df['Date'] = date_utc(self.df['Date'])
         self.df.set_index('Date', inplace = True)
         self.df = self.df[['High', 'Low', 'Open', 'Volume', 'Adj Close']].apply(pd.to_numeric)
+        
