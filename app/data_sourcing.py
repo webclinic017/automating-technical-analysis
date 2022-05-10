@@ -76,7 +76,7 @@ def date_utc(date_):
         
 class Data_Sourcing:
     def __init__(self):
-        self.df_crypto = pd.read_csv('market_data/crypto.txt')
+        self.df_crypto = pd.read_csv('market_data/binance.txt')
         self.df_stocks = pd.read_csv('market_data/snp500.txt')
         self.df_indexes = pd.read_csv('market_data/indexes.txt')
 
