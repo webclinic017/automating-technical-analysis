@@ -37,7 +37,7 @@ class Visualization(Prediction):
         self.fig_action.update_layout(autosize = False, height = 750, dragmode = False, hovermode = 'x', plot_bgcolor = 'rgba(255, 255, 255, 0.88)', 
         title = dict(text = f"{self.asset} to {self.market}.", y = 0.95, x = 0.5, xanchor =  'center', yanchor = 'top', font = dict(size = 20)), 
         xaxis_range = (self.df_visulization.index.min(), self.df_visulization.index.max()), 
-        yaxis_range = (self.df_visulization['Adj Close'].min(), self.df_visulization['Adj Close'].max() + self.df_visulization['Adj Close'].std()/3))
+        yaxis_range = (self.df_visulization['Adj Close'].min() - self.df_visulization['Adj Close'].std()/10, self.df_visulization['Adj Close'].max() + self.df_visulization['Adj Close'].std()/3))
         self.fig_action.update_xaxes(title_text = "Date", zeroline = False, showline = False, showgrid = False, linewidth = 2, rangeslider_visible = True)
         self.fig_action.update_yaxes(title_text = "Close Price & Action", secondary_y = False, showgrid = False, showline = False)
         self.fig_action.update_yaxes(title_text = "Volume", secondary_y = True, showgrid = False, showline = False)
