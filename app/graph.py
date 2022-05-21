@@ -12,6 +12,8 @@ class Visualization(Prediction):
 
     def prediction_graph(self):
 
+        self.df_visulization = self.df_visulization.iloc[-450:]
+
         if self.df_visulization['Open'].iloc[-1] > self.df_visulization['Adj Close'].iloc[-1]:
             trace_color = 'rgba(255, 0, 0, 0.15)'
             price_tag = 'Bearish'
@@ -28,14 +30,14 @@ class Visualization(Prediction):
         self.fig_action.add_trace(go.Scatter(x = self.df_visulization.index, y = self.df_visulization['Price_Sell'], mode = 'markers', name = "Sell", 
         marker = dict(color = '#DB4052', opacity = 0.85, size = 7.5)), secondary_y = False)
         self.fig_action.add_trace(go.Bar(x = self.df_visulization.index, y = self.df_visulization['Bullish Volume'], name = "Bullish Volume", 
-        marker = dict(color = '#008000', opacity = 1)), secondary_y = True)
+        marker = dict(color = '#008000', opacity = 0.75)), secondary_y = True)
         self.fig_action.add_trace(go.Bar(x = self.df_visulization.index, y = self.df_visulization['Bearish Volume'], name = "Bearish Volume", 
-        marker = dict(color = '#D2042D', opacity = 1)), secondary_y = True)
+        marker = dict(color = '#D2042D', opacity = 0.75)), secondary_y = True)
 
-        self.fig_action.update_layout(autosize = False, height = 750, dragmode = False, hovermode = 'x', plot_bgcolor = 'rgba(255, 255, 255, 0.85)', 
+        self.fig_action.update_layout(autosize = False, height = 750, dragmode = False, hovermode = 'x', plot_bgcolor = 'rgba(255, 255, 255, 0.88)', 
         title = dict(text = f"{self.asset} to {self.market}.", y = 0.95, x = 0.5, xanchor =  'center', yanchor = 'top', font = dict(size = 20)), 
         xaxis_range = (self.df_visulization.index.min(), self.df_visulization.index.max()), 
-        yaxis_range = (self.df_visulization['Adj Close'].min(), self.df_visulization['Adj Close'].max() + self.df_visulization['Adj Close'].std()/5))
+        yaxis_range = (self.df_visulization['Adj Close'].min(), self.df_visulization['Adj Close'].max() + self.df_visulization['Adj Close'].std()/3))
         self.fig_action.update_xaxes(title_text = "Date", zeroline = False, showline = False, showgrid = False, linewidth = 2, rangeslider_visible = True)
         self.fig_action.update_yaxes(title_text = "Close Price & Action", secondary_y = False, showgrid = False, showline = False)
         self.fig_action.update_yaxes(title_text = "Volume", secondary_y = True, showgrid = False, showline = False)
@@ -43,7 +45,7 @@ class Visualization(Prediction):
         return self.fig_action
 
     def technical_analysis_graph(self):
-        self.df_visulization_technical = self.df.iloc[-366:]
+        self.df_visulization_technical = self.df.iloc[-450:]
         
         self.fig_analysis = make_subplots(rows = 3, cols = 1)
         self.fig_analysis.append_trace(go.Scatter(x = self.df_visulization_technical.index, y = self.df_visulization_technical['MACD'], name = "MACD", 
@@ -69,7 +71,7 @@ class Visualization(Prediction):
         self.fig_analysis.add_shape(type = 'line', x0 = self.df_visulization_technical.index.min(), x1 = self.df_visulization_technical.index.max(), y0 = 20, y1 = 20, line = dict(color = '#008000', width = 1), row = 3, col = 1)
         self.fig_analysis.add_shape(type = 'line', x0 = self.df_visulization_technical.index.min(), x1 = self.df_visulization_technical.index.max(), y0 = 80, y1 = 80, line = dict(color = '#FF0000', width = 1), row = 3, col = 1)
 
-        self.fig_analysis.update_layout(autosize = False, height = 750, dragmode = False, hovermode = 'x', plot_bgcolor = 'rgba(255, 255, 255, 0.85)', 
+        self.fig_analysis.update_layout(autosize = False, height = 750, dragmode = False, hovermode = 'x', plot_bgcolor = 'rgba(255, 255, 255, 0.88)', 
         title = dict(text = "Technical Analysis.", y = 0.95, x = 0.5, xanchor = 'center', yanchor = 'top', font = dict(size = 20)))
         self.fig_analysis.update_shapes(dict(opacity = 0.7))
         self.fig_analysis.update_xaxes(showgrid = False, zeroline = False, showline = False)
