@@ -40,7 +40,7 @@ def main(app_data):
         markets = app_data.markets
         
         st.sidebar.subheader('Market:')
-        market = st.sidebar.selectbox('', markets)
+        market = st.sidebar.selectbox('', markets, index = 1)
         app_data.market_data(market)
         assets = app_data.assets
         currency = app_data.currency
