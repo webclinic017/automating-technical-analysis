@@ -1,4 +1,4 @@
-# Simple stock trading with data analytics and technical analysis. (Binance only)
+# Financial trading using Technical and Timeseries Analysis. (Binance only)
 
 ## Links:
 
