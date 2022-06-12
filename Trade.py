@@ -51,7 +51,7 @@ def main(app_data):
         st.sidebar.subheader('Interval:')
         if exchange == 'Binance':
             interval = st.sidebar.selectbox('', ('1 Minute', '3 Minute', '5 Minute', '15 Minute', '30 Minute', '1 Hour', 
-                        '6 Hour', '12 Hour', '1 Day', '1 Week', '1 Month'), index = 2)
+                        '6 Hour', '12 Hour', '1 Day', '1 Week'), index = 2)
         else:
             interval = st.sidebar.selectbox('', ('5 Minute', '30 Minute', '1 Hour', '1 Day'), index = 1)
         label = 'Cryptocurrency'
