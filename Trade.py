@@ -63,7 +63,7 @@ def main(app_data):
     risk = st.sidebar.selectbox('', ('Low', 'Medium', 'High'))
 
     st.title(f'Automated Technical Analysis.')
-    st.subheader(f'{label} Data Sourced from {exchange} in {interval} Interval.')
+    st.subheader(f'{label} Data Sourced from {exchange}.')
     st.info(f'Predicting...')
     
     future_price = 1   
