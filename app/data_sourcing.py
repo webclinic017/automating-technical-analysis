@@ -164,7 +164,7 @@ class Data_Sourcing:
                  (self.df_crypto['Market'] == self.market))][f'{self.exchange} Pair'].values[0]
             self.currency = self.markets
             if self.exchange == 'Binance':
-                url = f"https://api.binance.com/api/v1/klines?symbol={self.ticker_market}&interval={self.exchange_interval}&limit={limit}"
+                url = f"https://api.binance.com/api/v3/klines?symbol={self.ticker_market}&interval={self.exchange_interval}&limit={limit}"
                 self.df = pd.DataFrame(json.loads(requests.get(url).text))
                 self.df.columns = ['open_time', 'Open', 'High', 'Low', 'Adj Close', 'Volume', 'close_time', 
                                 'quoted average volume', 'num_trades', 'taker_base_vol', 'taker_quote_vol', 'ignore']
