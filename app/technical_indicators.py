@@ -1,4 +1,4 @@
-from app.data_sourcing import Data_Sourcing
+by from app.data_sourcing import Data_Sourcing
 
 class Technical_Calculations(Data_Sourcing):
     
@@ -81,4 +81,10 @@ class Technical_Calculations(Data_Sourcing):
 
     def price_analysis(self):
         self.df['HL_PCT'] = (self.df['High'] - self.df['Low']) / self.df['Adj Close'] * 100.0
-        self.df['PCT_CHG'] = (self.df['Adj Close'] - self.df['Open']) / self.df['Open'] * 100.0 
+        self.df['PCT_CHG'] = (self.df['Adj Close'] - self.df['Open']) / self.df['Open'] * def bollinger_bands(self, window=20, num_std_dev=2):
+   
+    def bollinger_bands(self, window=20, num_std_dev=2):
+    rolling_mean = self.df['Adj Close'].rolling(window=window).mean()
+    rolling_std = self.df['Adj Close'].rolling(window=window).std()
+    self.df['Upper Band'] = rolling_mean + (rolling_std * num_std_dev)
+    self.df['Lower Band'] = rolling_mean - (rolling_std * num_std_dev)
